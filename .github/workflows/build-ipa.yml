@@ -1,0 +1,50 @@
+name: Build JEE Dock IPA
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install XcodeGen + ldid
+        run: brew install xcodegen ldid
+
+      - name: Bundle web files into the app
+        run: |
+          mkdir -p ios/www
+          cp index.html dock.html shared.js icon.png ios/www/
+
+      - name: Generate Xcode project
+        working-directory: ios
+        run: xcodegen generate
+
+      - name: Build (unsigned)
+        working-directory: ios
+        run: |
+          xcodebuild -project JEEDock.xcodeproj -target JEEDock \
+            -configuration Release -sdk iphoneos \
+            SYMROOT="$PWD/build" \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+            build
+
+      - name: Package IPA
+        working-directory: ios
+        run: |
+          mkdir -p Payload
+          cp -R build/Release-iphoneos/JEEDock.app Payload/
+          # fake-sign so TrollStore installs it cleanly (Sideloadly re-signs anyway)
+          ldid -S Payload/JEEDock.app/JEEDock
+          zip -qry JEEDock.ipa Payload
+          cp JEEDock.ipa JEEDock.tipa
+          ls -la JEEDock.ipa
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: JEEDock-ipa
+          path: |
+            ios/JEEDock.ipa
+            ios/JEEDock.tipa
