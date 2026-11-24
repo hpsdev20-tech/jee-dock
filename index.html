@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>JEE Planner · Road to 20 Jan</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -11,24 +13,32 @@
     --bg:#0e1016; --panel:#161922; --panel2:#1c2030; --border:#262b3a; --text:#e8eaf0; --muted:#8a90a3;
     --phy:#4f8cff; --che:#22c55e; --mat:#f59e0b; --oth:#a855f7; --red:#ef4444; --accent:#6366f1;
   }
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100vh}
-  button{font-family:inherit;cursor:pointer}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{overflow-x:hidden}
+  body{font-family:Inter,-apple-system,BlinkMacSystemFont,system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100vh;-webkit-text-size-adjust:100%;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+  button{font-family:inherit;cursor:pointer;color:inherit}
   input,select{font-family:inherit}
 
   /* Header */
-  header{display:flex;align-items:center;gap:20px;padding:16px 24px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,#141826,var(--bg));position:sticky;top:0;z-index:20;flex-wrap:wrap}
+  header{display:flex;align-items:center;gap:14px;padding:14px 22px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,#141826,var(--bg));position:sticky;top:0;z-index:20;flex-wrap:wrap}
   .brand{display:flex;align-items:center;gap:12px}
-  .logo{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,var(--accent),#ec4899);display:grid;place-items:center;font-weight:800;font-size:16px}
+  .logo{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,var(--accent),#ec4899);display:grid;place-items:center;font-weight:800;font-size:16px;flex:none}
   .brand h1{font-size:18px;font-weight:800;letter-spacing:-.3px}
   .brand p{color:var(--muted);font-size:12px}
   .stats{display:flex;gap:10px;margin-left:auto;flex-wrap:wrap}
-  .stat{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:8px 14px;min-width:110px}
+  .stat{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:8px 14px;min-width:105px}
   .stat b{display:block;font-size:20px;font-weight:800;letter-spacing:-.5px}
   .stat span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
   .stat.count b{color:#f87171}
-  .hbtn{background:var(--panel);border:1px solid var(--border);color:var(--muted);padding:8px 12px;border-radius:10px;font-size:12px;font-weight:600}
+  .hacts{display:flex;gap:8px;align-items:center}
+  .hbtn{background:var(--panel);border:1px solid var(--border);color:var(--muted);padding:8px 12px;border-radius:10px;font-size:12px;font-weight:600;white-space:nowrap}
   .hbtn:hover{color:var(--text);border-color:#3a4155}
+  .m-days{display:none;background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.3);border-radius:999px;padding:3px 9px;font-size:11.5px;font-weight:700;white-space:nowrap}
+
+  /* Mobile tab bar */
+  .mtabs{display:none;background:var(--panel);border-bottom:1px solid var(--border);padding:8px 12px;gap:8px;position:sticky;top:52px;z-index:19}
+  .mtabs button{flex:1;padding:9px 6px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--muted);font-size:13px;font-weight:700;transition:.15s}
+  .mtabs button.active{background:var(--accent);color:#fff}
 
   /* Layout */
   main{display:grid;grid-template-columns:300px 1fr 290px;gap:16px;padding:16px 24px;align-items:start}
@@ -45,28 +55,30 @@
   .search{width:100%;margin-top:10px;background:var(--panel2);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:9px;font-size:13px;outline:none}
   .search:focus{border-color:var(--accent)}
   .toggle{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;color:var(--muted);cursor:pointer;user-select:none}
-  .bank{overflow-y:auto;padding:10px;flex:1;min-height:120px;transition:background .15s}
+  .bank{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px;flex:1;min-height:120px;transition:background .15s}
   .bank.over{background:rgba(239,68,68,.08);outline:2px dashed var(--red);outline-offset:-6px}
   .grp-title{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);font-weight:700;margin:10px 4px 6px}
   .chap{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:9px;background:var(--panel2);border:1px solid transparent;margin-bottom:5px;cursor:grab;transition:.12s}
   .chap:hover{border-color:#343a4f}
   .chap.sel{border-color:var(--accent);box-shadow:0 0 0 2px rgba(99,102,241,.35)}
-  .chap.planned{opacity:.55}
+  .chap.planned{opacity:.65}
   .chap.done .cname{text-decoration:line-through;color:var(--muted)}
-  .dot{width:8px;height:8px;border-radius:50%;flex:none}
-  .cname{flex:1;font-size:12.5px;font-weight:500;line-height:1.25}
-  .pin{font-size:10px;color:var(--muted);white-space:nowrap}
+  .dot{width:8px;height:8px;border-radius:50%;flex:none;display:inline-block}
+  .cname{flex:1;font-size:12.5px;font-weight:500;line-height:1.25;min-width:0}
+  .pin{font-size:10.5px;color:var(--muted);white-space:nowrap}
   .stepper{display:flex;align-items:center;background:var(--bg);border:1px solid var(--border);border-radius:7px;flex:none}
-  .stepper button{background:none;border:none;color:var(--muted);width:20px;height:22px;font-size:14px;line-height:1}
+  .stepper button{background:none;border:none;color:var(--muted);width:22px;height:24px;font-size:14px;line-height:1}
   .stepper button:hover{color:var(--text)}
   .stepper span{font-size:11.5px;font-weight:700;min-width:22px;text-align:center}
+  .m-plan-btn{display:none;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:5px 9px;border-radius:8px;font-size:11.5px;font-weight:700;flex:none}
+  .chap.planned .m-plan-btn{border-color:var(--accent);color:#a5b4fc}
   .del{background:none;border:none;color:var(--muted);font-size:14px;opacity:0;width:14px}
   .chap:hover .del{opacity:1}
   .del:hover{color:var(--red)}
   .addbox{padding:10px;border-top:1px solid var(--border);display:flex;gap:6px}
   .addbox input{flex:1;min-width:0;background:var(--panel2);border:1px solid var(--border);color:var(--text);padding:7px 9px;border-radius:8px;font-size:12.5px;outline:none}
   .addbox select{background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:8px;font-size:12px;padding:0 4px}
-  .addbox button{background:var(--accent);border:none;color:#fff;border-radius:8px;padding:0 11px;font-weight:700}
+  .addbox button{background:var(--accent);border:none;color:#fff;border-radius:8px;padding:0 12px;font-weight:700}
 
   /* Calendar */
   .cal-wrap{padding:14px}
@@ -94,7 +106,11 @@
   .day.clickable{cursor:copy}
   .day.clickable:hover{border-color:var(--accent)}
   .day.heavy{border-color:rgba(245,158,11,.5)}
+  .day.active-day{border-color:#fff;box-shadow:0 0 0 2px rgba(99,102,241,.5)}
   .items{display:flex;flex-direction:column;gap:3px;overflow-y:auto;max-height:150px}
+  .dots{display:none;flex-wrap:wrap;gap:3px;margin-top:auto;padding-top:2px}
+  .dots i{width:6px;height:6px;border-radius:50%;background:var(--c)}
+  .dots i.done{opacity:.35}
   .chip{font-size:11px;font-weight:600;padding:4px 6px;border-radius:6px;display:flex;align-items:center;gap:4px;cursor:grab;line-height:1.2;position:relative;border-left:3px solid;min-width:0}
   .chip .t{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .chip .n{font-size:9.5px;opacity:.7;flex:none}
@@ -115,6 +131,23 @@
   .chip{border-color:var(--c);background:var(--cb);color:var(--cf)}
   .dot{background:var(--c)}
 
+  /* Mobile Selected Day panel (under calendar grid) */
+  .day-detail{display:none;margin-top:12px;border-top:1px solid var(--border);padding-top:12px}
+  .dd-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+  .dd-head h3{font-size:15px;font-weight:800}
+  .dd-head .add-day-btn{background:var(--accent);border:none;color:#fff;padding:7px 12px;border-radius:9px;font-size:12.5px;font-weight:700}
+  .dd-card{display:flex;align-items:center;gap:10px;padding:10px;border-radius:11px;background:var(--panel2);border-left:3px solid var(--c);margin-bottom:7px}
+  .dd-card.done{opacity:.55}
+  .dd-card.done .dd-name{text-decoration:line-through;color:var(--muted)}
+  .dd-info{flex:1;min-width:0}
+  .dd-name{font-size:13.5px;font-weight:600;line-height:1.25}
+  .dd-meta{font-size:11px;color:var(--muted);margin-top:2px}
+  .dd-btns{display:flex;align-items:center;gap:5px;flex:none}
+  .dd-btns button{min-width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;font-weight:700;padding:0 6px}
+  .dd-btns button.ok{background:rgba(34,197,94,.16);border-color:rgba(34,197,94,.4);color:#86efac}
+  .dd-btns button.rm{color:#fca5a5}
+  .dd-empty{text-align:center;color:var(--muted);font-size:13px;padding:16px 8px;background:var(--panel2);border-radius:11px}
+
   /* Checklist */
   .ring-box{display:flex;align-items:center;gap:14px;padding:16px}
   .ring{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;flex:none}
@@ -125,24 +158,46 @@
   .subj-row{display:flex;justify-content:space-between;font-size:12px;font-weight:600;margin-bottom:5px}
   .bar{height:6px;background:var(--panel2);border-radius:99px;overflow:hidden;margin-bottom:10px}
   .bar i{display:block;height:100%;background:var(--c);border-radius:99px;transition:width .3s}
-  .checklist{overflow-y:auto;padding:4px 10px 12px;flex:1;border-top:1px solid var(--border)}
+  .checklist{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 10px 12px;flex:1;border-top:1px solid var(--border)}
   details{margin-top:6px}
   summary{cursor:pointer;font-size:12px;font-weight:700;padding:8px 6px;list-style:none;display:flex;align-items:center;gap:8px;color:var(--text)}
   summary::-webkit-details-marker{display:none}
   summary::before{content:"▸";color:var(--muted);transition:.15s}
   details[open] summary::before{transform:rotate(90deg)}
   summary small{margin-left:auto;color:var(--muted);font-weight:600}
-  .ck{display:flex;align-items:center;gap:9px;padding:6px 8px;border-radius:8px;cursor:pointer;font-size:12.5px;user-select:none}
+  .ck{display:flex;align-items:center;gap:9px;padding:8px;border-radius:8px;cursor:pointer;font-size:13px;user-select:none}
   .ck:hover{background:var(--panel2)}
   .ck input{display:none}
-  .box{width:17px;height:17px;border-radius:5px;border:2px solid #3a4157;flex:none;display:grid;place-items:center;transition:.15s}
+  .box{width:19px;height:19px;border-radius:6px;border:2px solid #3a4157;flex:none;display:grid;place-items:center;transition:.15s}
   .ck input:checked + .box{background:var(--c);border-color:var(--c)}
-  .ck input:checked + .box::after{content:"✓";color:#0e1016;font-size:11px;font-weight:900}
+  .ck input:checked + .box::after{content:"✓";color:#0e1016;font-size:12px;font-weight:900}
   .ck input:checked ~ .lbl{color:var(--muted);text-decoration:line-through}
   .lbl{flex:1}
-  .ck .when{font-size:10.5px;color:var(--muted)}
+  .ck .when{font-size:11px;color:var(--muted)}
+  .m-danger{display:none;gap:8px;padding:12px;border-top:1px solid var(--border)}
+  .m-danger button{flex:1;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--panel2);color:var(--muted);font-size:12.5px;font-weight:600}
 
-  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:#22263a;border:1px solid var(--border);padding:10px 16px;border-radius:10px;font-size:13px;transition:.25s;z-index:99}
+  /* Bottom Sheet Modal (for mobile scheduling & day picking) */
+  .sheet-ov{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:200;display:flex;align-items:flex-end;justify-content:center;padding:0}
+  .sheet{background:var(--panel);border-top:1px solid var(--border);border-radius:18px 18px 0 0;width:100%;max-width:520px;max-height:85vh;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px calc(18px + env(safe-area-inset-bottom))}
+  .sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:10px}
+  .sheet-head h3{font-size:16px;font-weight:800;display:flex;align-items:center;gap:8px}
+  .sheet-close{background:var(--panel2);border:1px solid var(--border);color:var(--muted);width:32px;height:32px;border-radius:50%;font-size:16px;flex:none}
+  .sh-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin:12px 0 6px}
+  .sh-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .sh-btn{flex:1;min-width:72px;padding:10px 8px;border-radius:10px;border:1px solid var(--border);background:var(--panel2);color:var(--text);font-size:13px;font-weight:700;text-align:center}
+  .sh-btn.pri{background:var(--accent);border-color:var(--accent);color:#fff}
+  .sh-btn.ok{background:rgba(34,197,94,.18);border-color:rgba(34,197,94,.45);color:#86efac}
+  .sh-btn.red{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.35);color:#fca5a5}
+  .sh-date{width:100%;background:var(--panel2);border:1px solid var(--border);color:var(--text);padding:10px 12px;border-radius:10px;font-size:16px;color-scheme:dark}
+  .sh-step{display:flex;align-items:center;justify-content:space-between;background:var(--panel2);border:1px solid var(--border);border-radius:11px;padding:6px}
+  .sh-step button{width:42px;height:36px;border-radius:8px;border:none;background:var(--bg);color:var(--text);font-size:18px;font-weight:700}
+  .sh-step span{font-size:16px;font-weight:800}
+  .pick-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;background:var(--panel2);margin-bottom:6px;cursor:pointer}
+  .pick-item .nm{flex:1;font-size:13.5px;font-weight:600}
+  .pick-item .dy{font-size:11.5px;color:var(--muted);font-weight:700}
+
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:#22263a;border:1px solid var(--border);padding:10px 16px;border-radius:10px;font-size:13px;transition:.25s;z-index:299;white-space:nowrap}
   .toast.show{transform:translateX(-50%) translateY(0)}
 
   ::-webkit-scrollbar{width:8px;height:8px}
@@ -153,14 +208,61 @@
     .right{grid-column:1/-1}
     .right .sticky{position:static;max-height:none}
   }
+
+  /* Mobile / iPhone 7 layout */
   @media (max-width:820px){
-    main{grid-template-columns:1fr;padding:12px}
-    .sticky{position:static;max-height:420px}
-    .day{min-height:80px}
+    header{padding:8px 10px;gap:6px;flex-wrap:nowrap;min-height:50px}
+    .logo,.brand p,.stats,#clearCal,#resetAll{display:none}
+    .brand{gap:6px;min-width:0}
+    .brand h1{font-size:15px;white-space:nowrap}
+    .m-days{display:inline-block;font-size:11px;padding:3px 7px}
+    .hacts{margin-left:auto;gap:5px}
+    .hbtn{padding:6px 9px;font-size:12px}
+    .mtabs{display:flex;top:50px;padding:6px 10px;gap:6px}
+    .mtabs button{font-size:12.5px;padding:8px 4px;white-space:nowrap}
+
+    main{display:block;padding:10px}
+    main > .bank-panel, main > section, main > .right{display:none !important}
+    body[data-mtab="cal"] main > section{display:block !important}
+    body[data-mtab="bank"] main > .bank-panel{display:flex !important;flex-direction:column}
+    body[data-mtab="check"] main > .right{display:block !important}
+
+    .sticky{position:static;max-height:none}
+    .panel{border-radius:14px}
+    .bank{max-height:none;overflow:visible}
+    .checklist{overflow:visible}
+
+    /* Prevent iOS auto-zoom on inputs */
+    .search,.addbox input,.addbox select{font-size:16px;padding:10px}
+    .chap{padding:10px;gap:8px}
+    .cname{font-size:13.5px}
+    .stepper button{width:28px;height:30px;font-size:16px}
+    .stepper span{min-width:26px;font-size:12.5px}
+    .m-plan-btn{display:inline-block}
+    .del{display:none}
+
+    /* Compact touch calendar grid */
+    .cal-wrap{padding:10px}
+    .hint > span{display:none}
+    .hint{margin-bottom:8px}
+    .legend{margin-left:0;font-size:11.5px}
+    .dow{gap:4px}
+    .dow div{font-size:10px;text-align:center;padding:0}
+    .grid{gap:4px}
+    .day{min-height:46px;padding:4px 4px 5px;border-radius:9px}
+    .day .dnum{font-size:12px;padding:0}
+    .day .mon{font-size:8.5px;display:block;line-height:1}
+    .day .load{display:none}
+    .day .items{display:none}
+    .day .dots{display:flex}
+    .day.exam .big{font-size:16px;margin-top:12px}
+    .day.exam b,.day.exam span:last-child{display:none}
+    .day-detail{display:block}
+    .m-danger{display:flex}
   }
 </style>
 </head>
-<body>
+<body data-mtab="cal">
 
 <header>
   <div class="brand">
@@ -170,21 +272,30 @@
       <p>Road to 20 January 2027</p>
     </div>
   </div>
+  <span class="m-days" id="mDays">–d left</span>
   <div class="stats">
     <div class="stat count"><b id="sDays">–</b><span>Days left</span></div>
     <div class="stat"><b id="sDone">–</b><span>Chapters done</span></div>
     <div class="stat"><b id="sPlanned">–</b><span>Planned</span></div>
     <div class="stat"><b id="sPace">–</b><span>Needed / day</span></div>
   </div>
-  <button class="hbtn" onclick="location.href='dock.html'" title="Open Dock Mode">📱 Dock</button>
-  <button class="hbtn" id="syncBtn" title="Copy plan between PC and iPhone">⇄ Sync</button>
-  <button class="hbtn" id="clearCal" title="Remove all chapters from calendar">Clear calendar</button>
-  <button class="hbtn" id="resetAll" title="Reset everything">Reset</button>
+  <div class="hacts">
+    <button class="hbtn" onclick="location.href='dock.html'" title="Open Dock Mode">← Dock</button>
+    <button class="hbtn" id="syncBtn" title="Copy plan between PC and iPhone">⇄ Sync</button>
+    <button class="hbtn" id="clearCal" title="Remove all chapters from calendar">Clear calendar</button>
+    <button class="hbtn" id="resetAll" title="Reset everything">Reset</button>
+  </div>
 </header>
+
+<nav class="mtabs" id="mtabs">
+  <button data-m="cal" class="active">📅 Calendar</button>
+  <button data-m="bank">📚 Chapters</button>
+  <button data-m="check">✅ Checklist</button>
+</nav>
 
 <main>
   <!-- Chapter bank -->
-  <aside class="panel sticky">
+  <aside class="panel sticky bank-panel">
     <div class="panel-head">
       <h2>Chapters <small id="bankCount"></small></h2>
       <div class="tabs" id="tabs"></div>
@@ -216,6 +327,7 @@
       </div>
       <div class="dow"><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div></div>
       <div class="grid" id="grid"></div>
+      <div class="day-detail" id="dayDetail"></div>
     </div>
   </section>
 
@@ -228,6 +340,10 @@
       </div>
       <div class="subj" id="subjBars"></div>
       <div class="checklist" id="checklist"></div>
+      <div class="m-danger">
+        <button id="mClearCal">Clear calendar</button>
+        <button id="mResetAll">Reset all</button>
+      </div>
     </div>
   </aside>
 </main>
@@ -239,8 +355,17 @@
 let state = loadState();
 const save = () => saveState(state);
 const byId = id => state.chapters.find(c => c.id === id);
+const isMobile = () => window.matchMedia('(max-width:820px)').matches;
 
-let ui = {tab:'All', q:'', hidePlanned:false, selected:null, dragId:null};
+let ui = {tab:'All', q:'', hidePlanned:false, selected:null, dragId:null, activeDay: TODAY < EXAM ? TODAY : addDays(EXAM,-1)};
+
+/* ---------- mobile tabs ---------- */
+document.getElementById('mtabs').addEventListener('click', e => {
+  const b = e.target.closest('button[data-m]'); if (!b) return;
+  document.body.dataset.mtab = b.dataset.m;
+  document.querySelectorAll('#mtabs button').forEach(x => x.classList.toggle('active', x === b));
+  window.scrollTo(0, 0);
+});
 
 /* ---------- calendar range ---------- */
 function calRange(){
@@ -258,18 +383,18 @@ function renderTabs(){
 function renderBank(){
   const bank = document.getElementById('bank');
   const q = ui.q.toLowerCase();
-  let html = '', shown = 0;
+  let html = '';
   for (const s of SUBJECTS){
     if (ui.tab !== 'All' && ui.tab !== s) continue;
     const list = state.chapters.filter(c => c.subject===s && (!q || c.name.toLowerCase().includes(q)) && !(ui.hidePlanned && c.start));
     if (!list.length) continue;
     html += `<div class="grp-title">${s==='Other'?'Mocks & Revision':s}</div>`;
     for (const c of list){
-      shown++;
       html += `<div class="chap s-${c.subject} ${c.start?'planned':''} ${c.done?'done':''} ${ui.selected===c.id?'sel':''}" draggable="true" data-id="${c.id}">
         <i class="dot"></i>
         <span class="cname">${esc(c.name)}${c.start?`<br><span class="pin">📅 ${fmt(c.start)}${c.days>1?' → '+fmt(endOf(c)):''}</span>`:''}</span>
         <div class="stepper"><button data-step="-1">−</button><span>${c.days}d</span><button data-step="1">+</button></div>
+        <button class="m-plan-btn" data-plan>${c.start ? fmt(c.start) : 'Plan'}</button>
         <button class="del" data-del title="Delete chapter">×</button>
       </div>`;
     }
@@ -279,7 +404,7 @@ function renderBank(){
   document.getElementById('bankCount').textContent = `${planned}/${state.chapters.length} planned`;
 }
 
-/* ---------- render: calendar ---------- */
+/* ---------- render: calendar + mobile day detail ---------- */
 function renderCalendar(){
   const [start,end] = calRange();
   const grid = document.getElementById('grid');
@@ -297,9 +422,12 @@ function renderCalendar(){
     if (d > EXAM){ html += `<div class="day dead">${num}</div></div>`; continue; }
     const items = placed.filter(c => c.start <= d && d <= endOf(c));
     const cls = ['day']; if (d < TODAY) cls.push('past'); if (d===TODAY) cls.push('today');
+    if (d === ui.activeDay) cls.push('active-day');
     if (items.filter(c=>!c.done).length >= 4) cls.push('heavy');
     if (ui.selected) cls.push('clickable');
-    html += `<div class="${cls.join(' ')}" data-date="${d}">${num}${items.length?`<span class="load">${items.length}</span>`:''}</div><div class="items">`;
+    html += `<div class="${cls.join(' ')}" data-date="${d}">${num}${items.length?`<span class="load">${items.length}</span>`:''}</div>`;
+    html += `<div class="dots">${items.slice(0,8).map(c=>`<i class="s-${c.subject}${c.done?' done':''}"></i>`).join('')}</div>`;
+    html += `<div class="items">`;
     for (const c of items){
       const n = diff(c.start,d)+1;
       const overdue = !c.done && endOf(c) < TODAY;
@@ -314,6 +442,40 @@ function renderCalendar(){
     html += `</div></div>`;
   }
   grid.innerHTML = html;
+  renderDayDetail(placed);
+}
+
+function renderDayDetail(placed){
+  const box = document.getElementById('dayDetail');
+  const d = ui.activeDay;
+  if (d === EXAM){
+    box.innerHTML = `<div class="dd-head"><h3>🎯 20 Jan — JEE Main Day</h3></div><div class="dd-empty">Exam day! Stay calm and trust your prep.</div>`;
+    return;
+  }
+  const dt = parse(d);
+  const title = dt.toLocaleDateString('en-IN', {weekday:'short', day:'numeric', month:'short'}) + (d === TODAY ? ' · Today' : '');
+  const items = placed.filter(c => c.start <= d && d <= endOf(c));
+  let h = `<div class="dd-head"><h3>${title}</h3><button class="add-day-btn" id="addToDayBtn">+ Add chapter</button></div>`;
+  if (!items.length){
+    h += `<div class="dd-empty">Nothing planned for ${fmt(d)}.<br>Tap <b>+ Add chapter</b> to schedule one.</div>`;
+  } else {
+    h += items.map(c => {
+      const n = diff(c.start, d) + 1;
+      return `<div class="dd-card s-${c.subject}${c.done?' done':''}" data-id="${c.id}">
+        <div class="dd-info">
+          <div class="dd-name">${esc(c.name)}</div>
+          <div class="dd-meta">${c.subject==='Other'?'Mock/Rev':c.subject} · ${c.days>1?`Day ${n} of ${c.days} (${fmt(c.start)} → ${fmt(endOf(c))})`:'1 day'}</div>
+        </div>
+        <div class="dd-btns">
+          <button data-cstep="-1">−</button>
+          <button data-cstep="1">+</button>
+          <button class="${c.done?'ok':''}" data-ctoggle>✓</button>
+          <button class="rm" data-cremove>×</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  box.innerHTML = h;
 }
 
 /* ---------- render: checklist & stats ---------- */
@@ -343,6 +505,7 @@ function renderChecklist(){
   }).join('');
 
   document.getElementById('sDays').textContent = daysLeft;
+  document.getElementById('mDays').textContent = daysLeft + 'd left';
   document.getElementById('sDone').textContent = `${done}/${all.length}`;
   document.getElementById('sPlanned').textContent = `${state.chapters.filter(c=>c.start).length}/${state.chapters.length}`;
   const left = all.length - done;
@@ -350,6 +513,91 @@ function renderChecklist(){
 }
 
 function renderAll(){ save(); renderTabs(); renderBank(); renderCalendar(); renderChecklist(); }
+
+/* ---------- bottom sheets (mobile friendly) ---------- */
+function openChapterSheet(id){
+  const c = byId(id); if (!c) return;
+  const maxDate = addDays(EXAM, -1);
+  const ov = document.createElement('div'); ov.className = 'sheet-ov';
+  const draw = () => {
+    ov.innerHTML = `<div class="sheet">
+      <div class="sheet-head">
+        <h3><i class="dot s-${c.subject}"></i>${esc(c.name)}</h3>
+        <button class="sheet-close" id="shClose">×</button>
+      </div>
+      <div class="sh-label">How many days?</div>
+      <div class="sh-step">
+        <button id="shMinus">−</button>
+        <span>${c.days} day${c.days>1?'s':''}</span>
+        <button id="shPlus">+</button>
+      </div>
+      <div class="sh-label">Start date ${c.start ? `(${fmt(c.start)}${c.days>1?' → '+fmt(endOf(c)):''})` : '(Not planned)'}</div>
+      <div class="sh-row" style="margin-bottom:8px">
+        <button class="sh-btn" data-q="${TODAY}">Today</button>
+        <button class="sh-btn" data-q="${addDays(TODAY,1)}">Tomorrow</button>
+        <button class="sh-btn" data-q="${addDays(TODAY,2)}">${fmt(addDays(TODAY,2))}</button>
+      </div>
+      <input class="sh-date" type="date" id="shDate" value="${c.start || ui.activeDay}" max="${maxDate}">
+      <div class="sh-row" style="margin-top:12px">
+        <button class="sh-btn pri" id="shSave">Save to calendar</button>
+      </div>
+      <div class="sh-row" style="margin-top:8px">
+        <button class="sh-btn ${c.done?'ok':''}" id="shDone">${c.done?'Completed ✓':'Mark done'}</button>
+        ${c.start ? `<button class="sh-btn red" id="shUnplan">Remove</button>` : ''}
+      </div>
+    </div>`;
+    ov.querySelector('#shClose').onclick = () => ov.remove();
+    ov.querySelector('#shMinus').onclick = () => { step(id, -1); draw(); };
+    ov.querySelector('#shPlus').onclick = () => { step(id, 1); draw(); };
+    ov.querySelectorAll('[data-q]').forEach(b => b.onclick = () => {
+      place(id, b.dataset.q); ui.activeDay = b.dataset.q; ov.remove(); toast(`Planned for ${fmt(b.dataset.q)}`);
+    });
+    ov.querySelector('#shSave').onclick = () => {
+      const val = ov.querySelector('#shDate').value;
+      if (!val || val >= EXAM){ toast('Pick a date before 20 Jan'); return; }
+      place(id, val); ui.activeDay = val; ov.remove(); toast(`Planned for ${fmt(val)}`);
+    };
+    ov.querySelector('#shDone').onclick = () => { c.done = !c.done; renderAll(); draw(); };
+    const unp = ov.querySelector('#shUnplan');
+    if (unp) unp.onclick = () => { c.start = null; renderAll(); ov.remove(); toast('Removed from calendar'); };
+  };
+  ov.addEventListener('click', e => { if (e.target === ov) ov.remove(); });
+  document.body.appendChild(ov);
+  draw();
+}
+
+function openAddToDaySheet(date){
+  const ov = document.createElement('div'); ov.className = 'sheet-ov';
+  let q = '', sub = 'All';
+  ov.innerHTML = `<div class="sheet">
+    <div class="sheet-head">
+      <h3>Add to ${fmt(date)}</h3>
+      <button class="sheet-close" id="pkClose">×</button>
+    </div>
+    <div class="tabs" id="pkTabs" style="margin-top:0;margin-bottom:8px"></div>
+    <input class="search" id="pkSearch" placeholder="Search chapter…" style="margin-top:0;margin-bottom:10px">
+    <div id="pkList"></div>
+  </div>`;
+  const drawList = () => {
+    ov.querySelector('#pkTabs').innerHTML = ['All',...SUBJECTS].map(s => `<button class="tab ${sub===s?'active':''}" data-s="${s}">${s==='Other'?'Mock/Rev':s}</button>`).join('');
+    const list = state.chapters.filter(c => (sub==='All' || c.subject===sub) && (!q || c.name.toLowerCase().includes(q)));
+    list.sort((a,b) => (a.start?1:0) - (b.start?1:0));
+    ov.querySelector('#pkList').innerHTML = list.map(c => `<div class="pick-item s-${c.subject}" data-id="${c.id}">
+      <i class="dot"></i>
+      <span class="nm">${esc(c.name)}${c.start?`<br><span class="pin">Currently ${fmt(c.start)}</span>`:''}</span>
+      <span class="dy">${c.days}d</span>
+    </div>`).join('') || `<p style="color:var(--muted);padding:12px">No chapters match.</p>`;
+  };
+  ov.addEventListener('click', e => {
+    if (e.target === ov || e.target.id === 'pkClose') return ov.remove();
+    const tb = e.target.closest('[data-s]'); if (tb){ sub = tb.dataset.s; drawList(); return; }
+    const it = e.target.closest('.pick-item');
+    if (it){ place(it.dataset.id, date); ov.remove(); toast(`Added to ${fmt(date)}`); }
+  });
+  ov.querySelector('#pkSearch').addEventListener('input', e => { q = e.target.value.toLowerCase(); drawList(); });
+  document.body.appendChild(ov);
+  drawList();
+}
 
 /* ---------- actions ---------- */
 function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),2200); }
@@ -368,6 +616,10 @@ document.getElementById('bank').addEventListener('click', e=>{
   if (e.target.dataset.step) return step(id, +e.target.dataset.step);
   if (e.target.hasAttribute('data-del')){
     if (confirm(`Delete "${byId(id).name}"?`)){ state.chapters = state.chapters.filter(c=>c.id!==id); renderAll(); }
+    return;
+  }
+  if (e.target.hasAttribute('data-plan') || isMobile()){
+    openChapterSheet(id);
     return;
   }
   ui.selected = ui.selected === id ? null : id;
@@ -396,7 +648,20 @@ document.getElementById('grid').addEventListener('click', e=>{
     if (!ui.selected) return;
   }
   const day = e.target.closest('.day[data-date]');
-  if (day && ui.selected) place(ui.selected, day.dataset.date);
+  if (!day) return;
+  if (ui.selected){ place(ui.selected, day.dataset.date); return; }
+  if (isMobile()){ ui.activeDay = day.dataset.date; renderCalendar(); }
+});
+
+/* mobile day-detail clicks */
+document.getElementById('dayDetail').addEventListener('click', e => {
+  if (e.target.id === 'addToDayBtn'){ openAddToDaySheet(ui.activeDay); return; }
+  const card = e.target.closest('.dd-card'); if (!card) return;
+  const id = card.dataset.id, c = byId(id);
+  if (e.target.dataset.cstep) return step(id, +e.target.dataset.cstep);
+  if (e.target.hasAttribute('data-ctoggle')){ c.done = !c.done; if(c.done) toast(`✅ ${c.name} done!`); return renderAll(); }
+  if (e.target.hasAttribute('data-cremove')){ c.start = null; return renderAll(); }
+  openChapterSheet(id);
 });
 
 /* checklist */
@@ -407,9 +672,10 @@ document.getElementById('checklist').addEventListener('change', e=>{
   renderAll();
 });
 
-/* ---------- drag & drop ---------- */
+/* ---------- drag & drop (desktop) ---------- */
 function clearPreview(){ document.querySelectorAll('.day.preview').forEach(d=>d.classList.remove('preview','bad')); }
 document.addEventListener('dragstart', e=>{
+  if (isMobile()) return;
   const el = e.target.closest('[draggable][data-id]'); if (!el) return;
   ui.dragId = el.dataset.id;
   e.dataTransfer.setData('text/plain', el.dataset.id);
@@ -448,9 +714,13 @@ bank.addEventListener('drop', e=>{
 
 document.addEventListener('keydown', e=>{ if (e.key==='Escape' && ui.selected){ ui.selected=null; renderBank(); renderCalendar(); }});
 
-/* header buttons */
-document.getElementById('clearCal').onclick = ()=>{ if(confirm('Remove all chapters from the calendar? (Checklist stays)')){ state.chapters.forEach(c=>c.start=null); renderAll(); }};
-document.getElementById('resetAll').onclick = ()=>{ if(confirm('Reset EVERYTHING to default? This clears your plan and checklist.')){ state = defaults(); renderAll(); }};
+/* header & mobile danger buttons */
+const doClear = ()=>{ if(confirm('Remove all chapters from the calendar? (Checklist stays)')){ state.chapters.forEach(c=>c.start=null); renderAll(); }};
+const doReset = ()=>{ if(confirm('Reset EVERYTHING to default? This clears your plan and checklist.')){ state = defaults(); renderAll(); }};
+document.getElementById('clearCal').onclick = doClear;
+document.getElementById('resetAll').onclick = doReset;
+document.getElementById('mClearCal').onclick = doClear;
+document.getElementById('mResetAll').onclick = doReset;
 
 document.getElementById('syncBtn').onclick = ()=> openSync(()=>state, s=>{ state = s; renderAll(); toast('Plan imported ✓'); });
 
