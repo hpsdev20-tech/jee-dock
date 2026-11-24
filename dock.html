@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="JEE Dock">
+<meta name="theme-color" content="#0e1016">
+<link rel="apple-touch-icon" href="icon.png">
+<title>JEE Dock</title>
+<style>
+  :root{--bg:#0e1016;--panel:#161922;--panel2:#1f2433;--border:#262b3a;--text:#e8eaf0;--muted:#8a90a3;--accent:#6366f1;--red:#ef4444;--green:#22c55e}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;-webkit-user-select:none;user-select:none;overflow:hidden;-webkit-text-size-adjust:100%}
+  body{display:flex;flex-direction:column;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+  button{font-family:inherit;color:inherit;border:none;background:none;cursor:pointer}
+
+  .top{display:flex;align-items:center;gap:8px;padding:8px 12px 0}
+  .clock{font-size:16px;font-weight:700;font-variant-numeric:tabular-nums}
+  .date{font-size:12px;color:var(--muted)}
+  .sp{flex:1}
+  .ib{background:var(--panel);border:1px solid var(--border);border-radius:9px;padding:6px 10px;font-size:12px;font-weight:600;color:var(--muted)}
+  .ib:active{background:var(--panel2);color:var(--text)}
+
+  .main{flex:1;display:flex;gap:10px;padding:10px 12px 12px;min-height:0}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:12px;display:flex;flex-direction:column;min-height:0;min-width:0}
+  .c-count{flex:1}
+  .c-timer{flex:1.15;align-items:center;justify-content:space-between}
+  .c-today{flex:1.35}
+  .lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:700}
+
+  /* countdown */
+  .big{display:flex;align-items:baseline;gap:6px;margin-top:2px}
+  .big span{font-size:64px;font-weight:800;letter-spacing:-3px;line-height:1;background:linear-gradient(135deg,#f87171,#ec4899);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .big small{font-size:15px;color:var(--muted);font-weight:600}
+  .sub{font-size:12px;color:var(--muted);margin-top:4px}
+  .hrs{font-size:12px;font-weight:600;margin-top:2px;font-variant-numeric:tabular-nums}
+  .flex1{flex:1;min-height:6px}
+  .prow{display:flex;justify-content:space-between;font-size:12px;font-weight:600;margin-bottom:5px}
+  .bar{height:6px;background:var(--panel2);border-radius:9px;overflow:hidden}
+  .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),#ec4899);border-radius:9px;transition:width .4s}
+  .subs{display:flex;gap:10px;font-size:11.5px;color:var(--muted);margin-top:7px;font-weight:600}
+  .subs span{display:flex;align-items:center;gap:4px}
+  .quote{font-size:11.5px;color:var(--muted);font-style:italic;margin-top:10px;line-height:1.4}
+
+  /* timer */
+  .mode{font-size:11px;font-weight:800;letter-spacing:2px;color:var(--accent)}
+  .break .mode{color:var(--green)}
+  .ringwrap{position:relative;width:min(100%,44vh);flex:none}
+  .ringwrap svg{display:block;width:100%;height:auto;transform:rotate(-90deg)}
+  .trk{fill:none;stroke:var(--panel2);stroke-width:10}
+  .arc{fill:none;stroke:var(--accent);stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .3s linear}
+  .break .arc{stroke:var(--green)}
+  .time{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:9.5vh;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-1px}
+  .ctrls{display:flex;align-items:center;gap:12px}
+  .ctrls .sm{width:36px;height:36px;border-radius:50%;background:var(--panel2);font-size:15px;color:var(--muted)}
+  .ctrls .play{min-width:92px;height:38px;border-radius:19px;background:var(--accent);font-weight:700;font-size:14px;color:#fff}
+  .break .ctrls .play{background:var(--green);color:#06210f}
+  .ctrls button:active{transform:scale(.95)}
+  .presets{display:flex;gap:5px}
+  .presets button{font-size:11px;font-weight:600;padding:4px 8px;border-radius:99px;border:1px solid var(--border);color:var(--muted)}
+  .presets button.on{background:var(--text);color:var(--bg);border-color:var(--text)}
+  .sess{font-size:11px;color:var(--muted);font-weight:600;text-align:center}
+
+  /* today */
+  .th{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+  .th b{font-size:15px}
+  .th span{font-size:11.5px;color:var(--muted);font-weight:600}
+  .list{overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1;margin:0 -4px;padding:0 4px}
+  .it{display:flex;align-items:center;gap:10px;padding:10px;border-radius:11px;background:var(--panel2);margin-bottom:6px;border-left:3px solid var(--c);cursor:pointer}
+  .it:active{opacity:.7}
+  .box{width:20px;height:20px;border-radius:6px;border:2px solid #3a4157;flex:none;display:flex;align-items:center;justify-content:center}
+  .it.done .box{background:var(--c);border-color:var(--c)}
+  .it.done .box::after{content:"✓";color:#0e1016;font-size:13px;font-weight:900}
+  .nm{flex:1;font-size:13.5px;font-weight:600;line-height:1.25}
+  .it.done .nm{text-decoration:line-through;color:var(--muted)}
+  .dd{font-size:10.5px;color:var(--muted);font-weight:600;white-space:nowrap}
+  .sec{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:12px 2px 6px}
+  .sec.red{color:#f87171}
+  .nx{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);padding:4px 2px}
+  .empty{text-align:center;color:var(--muted);font-size:13px;padding:18px 6px;line-height:1.6}
+  .empty .ib{margin-top:8px;color:var(--text)}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--c);flex:none;display:inline-block}
+  .s-Physics{--c:#4f8cff} .s-Chemistry{--c:#22c55e} .s-Maths{--c:#f59e0b} .s-Other{--c:#a855f7}
+
+  #dim{position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity .4s;z-index:500}
+  body.dimmed #dim{opacity:.6}
+  body.flash{animation:fl 1s 3}
+  @keyframes fl{50%{background:#3b3f8f}}
+
+  @media (orientation:portrait){
+    .main{flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch}
+    .card{flex:none !important}
+    .ringwrap{width:62vw}
+    .time{font-size:13vw}
+    .c-timer{gap:10px}
+    .c-today .list{overflow:visible}
+    .big span{font-size:56px}
+  }
+</style>
+</head>
+<body>
+  <div class="top">
+    <div><div class="clock" id="clock">--:--</div><div class="date" id="date"></div></div>
+    <div class="sp"></div>
+    <button class="ib" id="dimBtn" title="Dim screen">☾</button>
+    <button class="ib" id="syncBtn">⇄ Sync</button>
+    <button class="ib" onclick="location.href='index.html'">🗓 Planner</button>
+  </div>
+
+  <div class="main">
+    <div class="card c-count">
+      <div class="lbl">JEE Main in</div>
+      <div class="big"><span id="dLeft">–</span><small id="dUnit">days</small></div>
+      <div class="sub" id="dSub"></div>
+      <div class="hrs" id="hLeft"></div>
+      <div class="flex1"></div>
+      <div class="prow"><span>Syllabus done</span><b id="pPct">0%</b></div>
+      <div class="bar"><i id="pBar"></i></div>
+      <div class="subs" id="pSubs"></div>
+      <div class="quote" id="quote"></div>
+    </div>
+
+    <div class="card c-timer" id="timerCard">
+      <div class="mode" id="mode">FOCUS</div>
+      <div class="ringwrap">
+        <svg viewBox="0 0 200 200"><circle class="trk" cx="100" cy="100" r="88"/><circle class="arc" id="arc" cx="100" cy="100" r="88"/></svg>
+        <div class="time" id="time">50:00</div>
+      </div>
+      <div class="ctrls">
+        <button class="sm" id="tReset" title="Reset">↺</button>
+        <button class="play" id="tMain">Start</button>
+        <button class="sm" id="tSkip" title="Skip">⏭</button>
+      </div>
+      <div class="presets" id="presets"></div>
+      <div class="sess" id="sess"></div>
+    </div>
+
+    <div class="card c-today">
+      <div class="th"><b>Today</b><span id="tCount"></span></div>
+      <div class="list" id="list"></div>
+    </div>
+  </div>
+
+  <div id="dim"></div>
+
+<script src="shared.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+let state = loadState();
+let curDay = today();
+
+const QUOTES = [
+  'Discipline beats motivation.',
+  'One chapter at a time.',
+  'Small daily wins add up to a big rank.',
+  'You don\'t have to be great to start, but you have to start to be great.',
+  'Revise what you learn, or you didn\'t learn it.',
+  'Mocks are practice for the real thing — analyse every one.',
+  'Focus on progress, not perfection.',
+  'The pain of discipline is less than the pain of regret.',
+  'Stay off the phone. This one excepted.',
+  'Every question you solve today is one less surprise on exam day.'
+];
+
+/* ---------- countdown + progress ---------- */
+function renderCount(){
+  const t = today(), d = Math.max(0, diff(t, EXAM));
+  if (d === 0 && t === EXAM){ $('dLeft').textContent = 'Today'; $('dUnit').textContent = '🎯'; $('dSub').textContent = 'All the best. You\'ve got this.'; }
+  else {
+    $('dLeft').textContent = d; $('dUnit').textContent = d === 1 ? 'day' : 'days';
+    const w = Math.floor(d/7), r = d % 7;
+    $('dSub').textContent = `20 Jan 2027 · ${w} week${w!==1?'s':''}${r?` ${r} day${r>1?'s':''}`:''}`;
+  }
+  const exam = parse(EXAM); exam.setHours(9);
+  const hrs = Math.max(0, Math.floor((exam - new Date())/36e5));
+  $('hLeft').textContent = hrs.toLocaleString('en-IN') + ' hours left';
+
+  const main = state.chapters.filter(c => c.subject !== 'Other'), done = main.filter(c => c.done).length;
+  const pct = main.length ? Math.round(done/main.length*100) : 0;
+  $('pPct').textContent = `${pct}% · ${done}/${main.length}`; $('pBar').style.width = pct + '%';
+  $('pSubs').innerHTML = ['Physics','Chemistry','Maths'].map(s => {
+    const l = state.chapters.filter(c => c.subject === s);
+    return `<span class="s-${s}"><i class="dot"></i>${s.slice(0,4)} ${l.filter(c=>c.done).length}/${l.length}</span>`;
+  }).join('');
+  $('quote').textContent = '“' + QUOTES[Math.floor(parse(t)/864e5) % QUOTES.length] + '”';
+}
+
+/* ---------- today list ---------- */
+function renderToday(){
+  const t = today(), tm = addDays(t,1);
+  const placed = state.chapters.filter(c => c.start).sort((a,b) => a.start.localeCompare(b.start));
+  const now = placed.filter(c => c.start <= t && t <= endOf(c));
+  const late = placed.filter(c => !c.done && endOf(c) < t);
+  const next = placed.filter(c => c.start === tm);
+  const item = (c, extra) => `<div class="it s-${c.subject}${c.done?' done':''}" data-id="${c.id}"><span class="box"></span><span class="nm">${esc(c.name)}</span><span class="dd">${extra}</span></div>`;
+  let h = '';
+  if (now.length) h += now.map(c => item(c, c.days>1 ? `day ${diff(c.start,t)+1}/${c.days}` : '')).join('');
+  else h += `<div class="empty">Nothing planned for today.<br><button class="ib" onclick="location.href='index.html'">🗓 Open planner</button></div>`;
+  if (late.length) h += `<div class="sec red">Catch up · ${late.length}</div>` + late.map(c => item(c, 'due ' + fmt(endOf(c)))).join('');
+  if (next.length) h += `<div class="sec">Tomorrow</div>` + next.map(c => `<div class="nx s-${c.subject}"><i class="dot"></i>${esc(c.name)}${c.days>1?` · ${c.days}d`:''}</div>`).join('');
+  $('list').innerHTML = h;
+  const dn = now.filter(c => c.done).length;
+  $('tCount').textContent = now.length ? `${dn}/${now.length} done · tap when finished` : '';
+}
+$('list').addEventListener('click', e => {
+  const it = e.target.closest('.it'); if (!it) return;
+  const c = state.chapters.find(x => x.id === it.dataset.id); if (!c) return;
+  c.done = !c.done; saveState(state); renderCount(); renderToday();
+});
+
+/* ---------- pomodoro ---------- */
+const TK = 'jeeDock.timer';
+const PRESETS = [[25,5],[50,10],[90,15]];
+let T = {focus:50, brk:10, mode:'focus', running:false, endAt:0, left:50*60e3, day:'', count:0, mins:0};
+try { Object.assign(T, JSON.parse(localStorage.getItem(TK) || '{}')); } catch(e) {}
+const saveT = () => localStorage.setItem(TK, JSON.stringify(T));
+const total = () => (T.mode === 'focus' ? T.focus : T.brk) * 60e3;
+const remaining = () => T.running ? Math.max(0, T.endAt - Date.now()) : T.left;
+const C = 2 * Math.PI * 88;
+$('arc').style.strokeDasharray = C;
+
+function start(){ unlockAudio(); if (T.left <= 0) T.left = total(); T.endAt = Date.now() + T.left; T.running = true; saveT(); }
+function pause(){ T.left = remaining(); T.running = false; saveT(); }
+function reset(){ T.running = false; T.left = total(); saveT(); }
+function setMode(m, auto){ T.mode = m; T.running = false; T.left = total(); if (auto) start(); saveT(); }
+function rollDay(){ const t = today(); if (T.day !== t){ T.day = t; T.count = 0; T.mins = 0; saveT(); } }
+function complete(){
+  beep(); document.body.classList.remove('flash'); void document.body.offsetWidth; document.body.classList.add('flash');
+  if (T.mode === 'focus'){ rollDay(); T.count++; T.mins += T.focus; setMode('break', true); }
+  else setMode('focus', false);
+}
+function renderTimer(){
+  let r = remaining();
+  if (T.running && r <= 0){ complete(); r = remaining(); }
+  const s = Math.ceil(r/1000);
+  $('time').textContent = pad(Math.floor(s/60)) + ':' + pad(s%60);
+  $('arc').style.strokeDashoffset = C * (1 - r/total());
+  $('timerCard').classList.toggle('break', T.mode === 'break');
+  $('mode').textContent = T.mode === 'focus' ? 'FOCUS' : 'BREAK';
+  $('tMain').textContent = T.running ? 'Pause' : (r < total() ? 'Resume' : 'Start');
+}
+function renderSess(){
+  rollDay();
+  const h = Math.floor(T.mins/60), m = T.mins % 60;
+  $('sess').textContent = `${T.count} session${T.count!==1?'s':''} · ${h?h+'h ':''}${m}m focused today`;
+  $('presets').innerHTML = PRESETS.map(([f,b]) => `<button data-f="${f}" data-b="${b}" class="${T.focus===f&&T.brk===b?'on':''}">${f}/${b}</button>`).join('');
+}
+$('tMain').onclick = () => { T.running ? pause() : start(); renderTimer(); };
+$('tReset').onclick = () => { reset(); renderTimer(); };
+$('tSkip').onclick = () => { setMode(T.mode === 'focus' ? 'break' : 'focus', false); renderTimer(); };
+$('presets').onclick = e => {
+  const b = e.target.closest('button'); if (!b) return;
+  T.focus = +b.dataset.f; T.brk = +b.dataset.b; setMode('focus', false); renderSess(); renderTimer();
+};
+
+/* sound (iPhone ring/silent switch must be on ring to hear it) */
+let ac;
+function unlockAudio(){
+  try { if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)(); if (ac.state === 'suspended') ac.resume(); } catch(e) {}
+}
+function beep(){
+  if (!ac) return;
+  [0, .35, .7, 1.4, 1.75, 2.1].forEach(t => {
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.frequency.value = 880; o.connect(g); g.connect(ac.destination);
+    const s = ac.currentTime + t;
+    g.gain.setValueAtTime(.0001, s); g.gain.exponentialRampToValueAtTime(.5, s+.02); g.gain.exponentialRampToValueAtTime(.0001, s+.28);
+    o.start(s); o.stop(s+.3);
+  });
+}
+
+/* ---------- clock + loop ---------- */
+function renderClock(){
+  const d = new Date();
+  $('clock').textContent = d.toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'});
+  $('date').textContent = d.toLocaleDateString('en-IN', {weekday:'long', day:'numeric', month:'short'});
+}
+function renderAll(){ renderClock(); renderCount(); renderToday(); renderSess(); renderTimer(); }
+
+let lastMin = -1;
+setInterval(() => {
+  renderTimer();
+  const d = new Date();
+  if (d.getMinutes() !== lastMin){
+    lastMin = d.getMinutes(); renderClock(); renderCount();
+    if (today() !== curDay){ curDay = today(); renderToday(); renderSess(); }
+  }
+}, 250);
+
+document.addEventListener('visibilitychange', () => { if (!document.hidden){ state = loadState(); renderAll(); } });
+$('dimBtn').onclick = () => document.body.classList.toggle('dimmed');
+$('syncBtn').onclick = () => openSync(() => state, s => { state = s; saveState(s); renderAll(); });
+
+renderAll();
+</script>
+</body>
+</html>
